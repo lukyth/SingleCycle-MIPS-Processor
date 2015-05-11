@@ -131,14 +131,6 @@ module processor
 		.sum_out(pc_plus4)
 	);
 
-	// adder to add branch offset to PC+4 for branching
-	adder branch_adder
-	(
-		.left_in(pc_plus4),
-		.right_in(branch_amount),
-		.sum_out(branch_address)
-	);
-
 	// Program Counter
 	program_counter pc
 	(
