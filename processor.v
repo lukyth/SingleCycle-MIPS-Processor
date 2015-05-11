@@ -9,7 +9,6 @@
 `include "data_memory.v"
 `include "inst_rom.v"
 `include "mux.v"
-`include "program_counter.v"
 `include "reg_file.v"
 `include "sign_extend.v"
 
@@ -29,8 +28,8 @@ module processor
 );
 
 	wire [`WORD_WIDTH:0] pc_plus4;
-	wire [`WORD_WIDTH:0] pc_in;
-	wire [`WORD_WIDTH:0] pc_out;
+	wire [`WORD_WIDTH:0] pc_in = 32'h003ffffc;
+	wire [`WORD_WIDTH:0] pc_out = 32'h003ffffc;
 
 	wire [`WORD_WIDTH:0] branch_amount;
 	wire [`WORD_WIDTH:0] branch_address;
@@ -128,16 +127,6 @@ module processor
 		.right_in(pc_out),
 		.sum_out(pc_plus4)
 	);
-
-	// Program Counter
-	program_counter pc
-	(
-		.clock(clock),
-		.reset(reset),
-		.in(pc_in),
-		.out(pc_out)
-	);
-
 
 
 	// 5-bit MUX which determines which register to write to
