@@ -5,7 +5,7 @@
 
 `include "adder.v"
 `include "alu.v"
-`include "control.v"
+`include "controller.v"
 `include "data_memory.v"
 `include "inst_rom.v"
 `include "mux.v"
