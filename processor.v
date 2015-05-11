@@ -10,7 +10,7 @@
 `include "inst_rom.v"
 `include "mux.v"
 `include "reg_file.v"
-`include "sign_extend.v"
+`include "signextender.v"
 
 module processor
 (
@@ -66,12 +66,9 @@ module processor
 	wire is_jump_reg;
 	wire is_branch;
 
-	wire [31:0] sign8out;
 	wire [31:0] sign16out;
-	wire [31:0] load8;
 	wire [31:0] load16;
 
-	wire [7:0] load8_out;
 	wire [31:0] load_data;
 	wire [31:0] to_alu_mux;
 
@@ -217,21 +214,6 @@ module processor
 	//load byte, hw, word mux
 
 
-	//sign extends 8 bit loads
-	sign_extend#(.W(8)) sign8
-	(
-		.in(load8_out),
-		.out(sign8out)
-	);
-
-	//selects from signed or unsigned 8 bits
-	mux signed8
-	(
-		.select_in(load_signed),
-		._0_in( { {24{1'b0}},load8_out} ),
-		._1_in(sign8out),
-		.out(load8)
-	);
 	wire [15:0] load16_out;
 	//selects upper or lower 16 load
 	mux#(.W(16)) load16s
@@ -242,7 +224,7 @@ module processor
 		.out(load16_out)
 	);
 	//sign extends 16 bit loads
-	sign_extend#(.W(16)) sign16
+	sign_extend sign16
 	(
 		.in(load16_out),
 		.out(sign16out)
