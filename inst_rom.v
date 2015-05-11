@@ -33,7 +33,7 @@ module inst_rom (
 
 	always @(addr_in) begin
 		if (reset) begin
-			out = 32'h00000000;
+			out = 32'h003FFFFC;
 		end else begin
 			out = rom[addr_in[ADDR_WIDTH+1:2]];
 		end

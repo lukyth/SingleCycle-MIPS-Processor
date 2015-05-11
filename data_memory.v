@@ -1,5 +1,8 @@
 `timescale 1ns / 1ps
 
+`include "async_memory.v"
+`include "serial_buf.v"
+
 /*
 **  UCSD CSE 141L Lab2/3 Provided Module
 ** -------------------------------------------------------------------
