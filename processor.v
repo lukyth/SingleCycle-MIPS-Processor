@@ -75,7 +75,6 @@ module processor
 	wire is_signed;
 	wire is_lui;
 	wire [31:0] to_signed_mux;
-	wire [31:0] pc_plus8;
 
     //pipeline1
 
@@ -195,19 +194,6 @@ module processor
 		._1_in(5'd31),
 		.out(reg_write_addr)
 	);
-
-	// MUX to determine if data to be written to register will be PC+8 due to a link
-	mux mux_is_linking_load
-	(
-		.select_in(is_linking),
-		._0_in(nonlink_write_data),
-		._1_in(pc_plus8),
-		.out(write_data_wire)
-	);
-
-
-
-
 
 
 	//pat added
