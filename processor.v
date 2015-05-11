@@ -10,7 +10,6 @@
 `include "inst_rom.v"
 `include "leftshift2.v"
 `include "mux.v"
-`include "mux4to1.v"
 `include "program_counter.v"
 `include "reg_file.v"
 `include "sign_extend.v"
@@ -203,17 +202,6 @@ module processor
 		.out(nonlink_write_data)
 	);
 
-	// 32-bit MUX used how the new PC is calculated depending on branches and jumpes
-	mux4to1 mux_to_pc
-	(
-		.select_in({is_jump,is_branch^is_jump_reg}), // TODO: for control path
-		.data0_in(pc_plus4),
-		.data1_in(branch_address),
-		.data2_in({pc_plus4[31:28],jump_shifted_addr[27:0]}),
-		.data3_in(alu_out),
-		.data_out(pc_in)
-	);
-
 	// left shifter to shift 16-bit branch immediate value
 	leftshift2 #(.W(16)) branch_shifter
 	(
@@ -237,14 +225,6 @@ module processor
 		.out(reg_write_addr)
 	);
 
-
-	adder link_adder
-	(
-		.left_in(`ADDER_CONST),
-		.right_in(pc_plus4),
-		.sum_out(pc_plus8)
-	);
-
 	// MUX to determine if data to be written to register will be PC+8 due to a link
 	mux mux_is_linking_load
 	(
@@ -262,17 +242,6 @@ module processor
 	//pat added
 	//load byte, hw, word mux
 
-
-	//chooses between 8 bits in 32 bit word
-	mux4to1#(.W(8)) load8s
-	(
-		.select_in(alu_out[1:0]),
-		.data0_in(datamem_read_data_out[7:0]),//00
-		.data1_in(datamem_read_data_out[15:8]), //01
-		.data2_in(datamem_read_data_out[23:16]), //10
-		.data3_in(datamem_read_data_out[31:24]), //11
-		.data_out(load8_out)
-	);
 
 	//sign extends 8 bit loads
 	sign_extend#(.W(8)) sign8
@@ -311,17 +280,6 @@ module processor
 		._0_in( {{16{1'b0}} ,load16_out} ),
 		._1_in(sign16out),
 		.out(load16)
-	);
-	wire [1:0] word_size2;
-	//final load data
-	mux4to1 load_size
-	(
-		.select_in(word_size2),
-		.data0_in(load8), //8bit
-		.data1_in(load16), //16 bits
-		.data2_in(0), //unused
-		.data3_in(datamem_read_data_out), //32 bit
-		.data_out(load_data)
 	);
 
 
@@ -366,7 +324,6 @@ module processor
 		.is_lui(is_lui),
 		.is_signed(is_signed),
 		.is_jump_reg(is_jump_reg),
-		.is_link(is_linking),
-		.word_size2(word_size2)
+		.is_link(is_linking)
 	);
 endmodule

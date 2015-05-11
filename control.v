@@ -16,8 +16,7 @@ module control#(parameter W = 6)
 	output reg load_signed,
 	output reg is_lui,
 	output reg is_signed,
-	output reg is_jump_reg,
-	output reg [1:0] word_size2
+	output reg is_jump_reg
 );
 
 	// Constants
@@ -29,11 +28,11 @@ module control#(parameter W = 6)
 	localparam ADD_FUNC = 6'b100000;
 	localparam LW = 6'b100011;
 	localparam SW = 6'b101011;
-	
+
 	//funcs
 	localparam FBEQ = 6'b111100;
 	localparam FBNE = 6'b111101;
-	localparam FBLTZ= 6'b111000; 
+	localparam FBLTZ= 6'b111000;
 	localparam FBGEZ= 6'b111001;
 	localparam FBGTZ= 6'b111111;
 	localparam FBLEZ = 6'b111110;
@@ -56,10 +55,10 @@ module control#(parameter W = 6)
 	localparam BNE = 6'b000101;
 	localparam BLTZ = 6'b000001;
 	localparam BLTZ_RT= 5'b00000;
-	
+
 	localparam BGEZ= 6'b000001;
 	localparam BGEZ_RT=5'b00001;
-	
+
 	localparam BLEZ= 6'b000110;
 	localparam BLEZ_RT=5'b00000;
 
@@ -76,7 +75,7 @@ module control#(parameter W = 6)
 	localparam LUI= 6'b001111;
 	localparam SLT= 6'b101010;
 	localparam SLTU= 6'b101011;
-	
+
 	always @(*)
 		begin
 			//defaults
@@ -94,7 +93,6 @@ module control#(parameter W = 6)
 			is_signed=1;
 			is_lui=0;
 			is_jump_reg=0;
-			word_size2=2'b11;
 			if(opcode_in == R_TYPE)
 				case(funct_in)
 				JR:
@@ -110,8 +108,8 @@ module control#(parameter W = 6)
 					alu_function=FJ;
 					reg_write_enabled = 1;
 					end
-				
-				
+
+
 				default:
 					begin
 					reg_write_enabled = 1;
@@ -122,13 +120,13 @@ module control#(parameter W = 6)
 					uses_immediate_in_alu = 0;
 					reads_memory = 0;
 					end
-			
+
 				endcase
-			
+
 			else if(opcode_in[5:1] == J_TYPE)
 				begin
-					case(opcode_in[0])	
-						1'b0:	
+					case(opcode_in[0])
+						1'b0:
 							begin// jump
 							is_link = 0;
 							reg_write_enabled = 1;
@@ -149,12 +147,12 @@ module control#(parameter W = 6)
 							is_r_type = 1;
 							uses_immediate_in_alu = 0;
 							reads_memory = 0;
-						
+
 							end
 					endcase
-					
+
 				end
-			
+
 			else
 				begin
 					case(opcode_in)
@@ -167,7 +165,7 @@ module control#(parameter W = 6)
 							is_r_type = 0;
 							uses_immediate_in_alu = 1;
 							reads_memory = 0;
-                            
+
 							end
 						LW:
 							begin
@@ -191,7 +189,7 @@ module control#(parameter W = 6)
 							reads_memory = 1'bx;
 							word_size=2'b11;
 							end
-						
+
 						LB:
 							begin
 							reg_write_enabled = 1;
@@ -203,7 +201,6 @@ module control#(parameter W = 6)
 							load_signed=1;
 							reads_memory=1;
 							word_size=2'b11;
-							word_size2=2'b0;
 							end
 						LBU:
 							begin
@@ -216,7 +213,6 @@ module control#(parameter W = 6)
 							load_signed=0;
 							reads_memory=1;
 							word_size=2'b11;
-							word_size2=2'b0;
 							end
 						LH:
 							begin
@@ -229,7 +225,6 @@ module control#(parameter W = 6)
 							load_signed=1;
 							reads_memory=1;
 							word_size=2'b11;
-							word_size2=2'b01;
 							end
 						LHU:
 							begin
@@ -242,7 +237,6 @@ module control#(parameter W = 6)
 							load_signed=0;
 							reads_memory=1;
 							word_size=2'b11;
-							word_size2=2'b01;
 							end
 						SB:
 							begin
@@ -265,9 +259,9 @@ module control#(parameter W = 6)
 							uses_immediate_in_alu = 1;
 							word_size=2'b01; //from asynch mem
 							reads_memory=0;
-							end	
-							
-							
+							end
+
+
 						ADDIU:
 							begin
 							reg_write_enabled = 1;
@@ -276,9 +270,9 @@ module control#(parameter W = 6)
 							datamem_write_enable = 0;
 							is_r_type = 0;
 							uses_immediate_in_alu = 1;
-			
+
 							reads_memory=0;
-						
+
 							end
 						ANDI:
 							begin
@@ -288,7 +282,7 @@ module control#(parameter W = 6)
 							datamem_write_enable = 0;
 							is_r_type = 0;
 							uses_immediate_in_alu = 1;
-							
+
 							reads_memory=0;
 							is_signed=0;
 							end
@@ -357,13 +351,13 @@ module control#(parameter W = 6)
 							if(rt==5'b00000)
 								alu_function=FBGTZ;
 						end
-					
+
 						BLEZ:
 						begin
 							if(rt==5'b00000)
 								alu_function=FBLEZ;
 						end
-						
+
 
 						endcase
 				end
