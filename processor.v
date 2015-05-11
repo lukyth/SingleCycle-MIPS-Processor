@@ -8,7 +8,6 @@
 `include "control.v"
 `include "data_memory.v"
 `include "inst_rom.v"
-`include "leftshift2.v"
 `include "mux.v"
 `include "program_counter.v"
 `include "reg_file.v"
@@ -200,20 +199,6 @@ module processor
 		._1_in(load_data), //changed
 		._0_in(alu_out),
 		.out(nonlink_write_data)
-	);
-
-	// left shifter to shift 16-bit branch immediate value
-	leftshift2 #(.W(16)) branch_shifter
-	(
-		.in(sign_extension_out),
-		.out(branch_amount)
-	);
-
-	// left shifter to shift 26-bit jump immediate value
-	leftshift2 #(.W(26)) jump_shifter
-	(
-		.in(inst_out[31:0]),
-		.out(jump_shifted_addr)
 	);
 
 	// MUX to determine if destination register will be return register due to a link
