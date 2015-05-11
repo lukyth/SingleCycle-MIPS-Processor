@@ -1,7 +1,7 @@
 module leftshift2#(parameter W = 32)
 	(
-		input [W-1:0] in,
-		output reg [31:0] out
+		input[31:0] in,
+		output reg[31:0] out
 	);
 
 	always@(*)

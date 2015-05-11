@@ -8,18 +8,18 @@ module reg_file#(parameter W = 32)
 	input 					write_en_in,
 	input [W-1:0] 	write_data_in,
 	output reg [W-1:0] 	read_data1_out,
-	output reg [W-1:0]	read_data2_out	
+	output reg [W-1:0]	read_data2_out
 	);
 
 	reg [W-1:0] reg_file [W-1:0];
-	
+
 	// asynchronous reads
 	always @(*)
 		begin
 			read_data1_out = reg_file[read_reg1_in];
 			read_data2_out = reg_file[read_reg2_in];
 		end
-	
+
 	// synchronous writes; handles $zero register
 	always @(posedge clock)
 		begin

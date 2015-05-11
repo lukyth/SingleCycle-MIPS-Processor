@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 `define ADDER_CONST 4
 `define WORD_WIDTH 31
 
@@ -230,7 +232,7 @@ module processor
 	// left shifter to shift 26-bit jump immediate value
 	leftshift2 #(.W(26)) jump_shifter
 	(
-		.in(inst_out[25:0]),
+		.in(inst_out[31:0]),
 		.out(jump_shifted_addr)
 	);
 
