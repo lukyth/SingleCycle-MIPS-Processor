@@ -1,11 +1,16 @@
-module controller(opcode,ALU_control,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
-    input   [5:0]   opcode, ALU_control;
-    output          RegDst, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
-    output  [5:0]   ALUOp;
-    reg             RegDst, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
-    reg     [5:0]   ALUOp;
+module controller (
+    input   [5:0]   opcode,
+    input   [5:0]   ALU_control,
+    output  reg     RegDst,
+    output  reg     MemRead,
+    output  reg     MemtoReg,
+    output  reg     MemWrite,
+    output  reg     ALUSrc,
+    output  reg     RegWrite,
+    output  reg [5:0]   ALUOp
+);
 
-    localparam R_DEFAULT  = 6'b000000;
+    localparam R_DEFAULT = 6'b000000;
     localparam LW        = 6'b100011;
     localparam SW        = 6'b101011;
     localparam ADDI      = 6'b001000;
