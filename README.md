@@ -1,4 +1,6 @@
 # Single-Cycle MIPS Processor
+  Single-Cycle MIPS CPU using verilog.  
+  Computer Architecture's Final project. 2nd year, Computer Engineering.
 
 ## Require
   
