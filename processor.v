@@ -55,7 +55,7 @@ module processor(
   );
 
   wire [4:0] write_register;
-  mux mux_write_register (
+  mux #(5) mux_write_register (
     .in_0(instruction[20:16]),
     .in_1(instruction[15:11]),
     .select(RegDst),
@@ -80,8 +80,8 @@ module processor(
     .out(instruction_extended)
   );
 
-  wire [4:0] alu_b;
-  mux mux_alu_b (
+  wire [31:0] alu_b;
+  mux #(32) mux_alu_b (
     .in_0(read_data_2),
     .in_1(instruction_extended),
     .select(ALUSrc),
@@ -118,7 +118,7 @@ module processor(
     .serial_wren_out(serial_wren_out)
   );
 
-  mux mux_write_data (
+  mux #(32) mux_write_data (
     .in_0(alu_result),
     .in_1(read_data),
     .select(MemtoReg),
