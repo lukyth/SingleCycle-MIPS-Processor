@@ -22,17 +22,45 @@ module processor(
 
   reg [31:0] pc = 32'h003FFFFC;
   wire [31:0] pc_plus4;
+
+  wire [31:0] instruction;
+
+  wire RegDst;
+  wire MemRead;
+  wire MemtoReg;
+  wire MemWrite;
+  wire ALUSrc;
+  wire RegWrite;
+  wire [5:0] ALUOp;
+
+  wire [4:0] write_register;
+  wire [31:0] read_data_1;
+  wire [31:0] read_data_2;
+  wire [31:0] write_data;
+
+  wire [31:0] instruction_extended;
+
+  wire [31:0] alu_b;
+
+  wire [31:0] alu_result;
+  wire branch, jump;
+
+  wire [31:0] read_data;
+
   adder pc_adder (.in(pc), .out(pc_plus4));
+
   always @(posedge clock) begin
     if (reset) begin
       pc <= 32'h003ffffc;
+    end
+    else if (instruction == 32'h00000000) begin
+      $finish;
     end
     else begin
       pc <= pc_plus4;
     end
   end
 
-  wire [31:0] instruction;
   inst_rom instruction_memory (
     .clock(clock),
     .reset(reset),
@@ -40,29 +68,18 @@ module processor(
     .data_out(instruction)
   );
 
-  wire RegDst, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
-  wire [5:0] ALUOp;
   controller control(
-    .opcode(inst[31:26]),
-    .ALU_control(inst[5:0]),
+    .opcode(instruction[31:26]),
+    .ALU_control(instruction[5:0]),
     .RegDst(RegDst),
     .MemRead(MemRead),
     .MemtoReg(MemtoReg),
     .ALUOp(ALUOp),
     .MemWrite(MemWrite),
-    .ALUSrc(ALUsrc),
+    .ALUSrc(ALUSrc),
     .RegWrite(RegWrite)
   );
 
-  wire [4:0] write_register;
-  mux #(5) mux_write_register (
-    .in_0(instruction[20:16]),
-    .in_1(instruction[15:11]),
-    .select(RegDst),
-    .out(write_register)
-  );
-
-  wire [31:0] read_data_1, read_data_2, write_data;
   register registers (
     .write_register(write_register),
     .write_data(write_data),
@@ -74,13 +91,18 @@ module processor(
     .clock(clock)
   );
 
-  wire [31:0] instruction_extended;
   signextender extend_instruction (
     .in(instruction[15:0]),
     .out(instruction_extended)
   );
 
-  wire [31:0] alu_b;
+  mux #(5) mux_write_register (
+    .in_0(instruction[20:16]),
+    .in_1(instruction[15:11]),
+    .select(RegDst),
+    .out(write_register)
+  );
+
   mux #(32) mux_alu_b (
     .in_0(read_data_2),
     .in_1(instruction_extended),
@@ -88,8 +110,13 @@ module processor(
     .out(alu_b)
   );
 
-  wire [31:0] alu_result;
-  wire branch, jump;
+  mux #(32) mux_write_data (
+    .in_0(alu_result),
+    .in_1(read_data),
+    .select(MemtoReg),
+    .out(write_data)
+  );
+
   alu ALU (
     .Func_in(ALUOp),
     .A_in(read_data_1),
@@ -99,7 +126,6 @@ module processor(
     .Jump_out(jump)
   );
 
-  wire [31:0] read_data;
   data_memory Data_memory (
     .clock(clock),
     .reset(reset),
@@ -116,13 +142,6 @@ module processor(
     .serial_out(serial_out),
     .serial_rden_out(serial_rden_out),
     .serial_wren_out(serial_wren_out)
-  );
-
-  mux #(32) mux_write_data (
-    .in_0(alu_result),
-    .in_1(read_data),
-    .select(MemtoReg),
-    .out(write_data)
   );
 
 endmodule
