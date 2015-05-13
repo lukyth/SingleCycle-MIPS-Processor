@@ -1,8 +1,8 @@
-module controller(opcode,func,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite)
-    input   [5:0]   opcode, func;
-    output          RegDst, MemRead, MemtoReg, MemWrite, ALUsrc, RegWrite;
+module controller(opcode,ALU_control,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite)
+    input   [5:0]   opcode, ALU_control;
+    output          RegDst, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
     output  [5:0]   ALUOp;
-    reg             RegDst, MemRead, MemtoReg, MemWrite, ALUsrc, RegWrite;
+    reg             RegDst, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
     reg     [5:0]   ALUOp;
 
     localparam R_DEFAULT  = 6'b000000;
@@ -27,16 +27,16 @@ module controller(opcode,func,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegW
         case (opcode)
             R_DEFAULT: begin
                 RegDst      = 1'b1;
-                ALUsrc      = 1'b0;
+                ALUSrc      = 1'b0;
                 MemtoReg    = 1'b0;
                 RegWrite    = 1'b1;
                 MemRead     = 1'b0;
                 MemWrite    = 1'b0;
-                ALUOp       = func;
+                ALUOp       = ALU_control;
             end
             LW: begin
                 RegDst      = 1'b0;
-                ALUsrc      = 1'b1;
+                ALUSrc      = 1'b1;
                 MemtoReg    = 1'b1;
                 RegWrite    = 1'b1;
                 MemRead     = 1'b1;
@@ -45,7 +45,7 @@ module controller(opcode,func,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegW
             end
             SW: begin
                 RegDst      = 1'bx;
-                ALUsrc      = 1'b1;
+                ALUSrc      = 1'b1;
                 MemtoReg    = 1'bx;
                 RegWrite    = 1'b0;
                 MemRead     = 1'b0;
@@ -55,7 +55,7 @@ module controller(opcode,func,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegW
             // Immediate function
             default: begin
                 RegDst      = 1'b0;
-                ALUsrc      = 1'b1;
+                ALUSrc      = 1'b1;
                 MemtoReg    = 1'b0;
                 RegWrite    = 1'b1;
                 MemRead     = 1'b0;

@@ -40,6 +40,20 @@ module processor(
     .data_out(instruction)
   );
 
+  wire RegDst, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
+  wire [5:0] ALUOp;
+  controller control(
+    .opcode(inst[31:26]),
+    .ALU_control(inst[5:0]),
+    .RegDst(RegDst),
+    .MemRead(MemRead),
+    .MemtoReg(MemtoReg),
+    .ALUOp(ALUOp),
+    .MemWrite(MemWrite),
+    .ALUSrc(ALUsrc),
+    .RegWrite(RegWrite)
+  );
+
   wire [4:0] write_register;
   mux mux_write_register (
     .in_0(instruction[20:16]),
