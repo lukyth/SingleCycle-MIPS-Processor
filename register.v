@@ -5,8 +5,8 @@ module register (
   input [4:0] read_register_2,
   input [4:0] write_register,
   input [31:0] write_data,
-  output reg [31:0] read_data_1,
-  output reg [31:0] read_data_2
+  output [31:0] read_data_1,
+  output [31:0] read_data_2
 );
 
   reg [31:0] registers [31:0];

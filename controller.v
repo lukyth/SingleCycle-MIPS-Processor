@@ -1,4 +1,4 @@
-module controller(opcode,ALU_control,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite)
+module controller(opcode,ALU_control,RegDst,MemRead,MemtoReg,ALUOp,MemWrite,ALUSrc,RegWrite);
     input   [5:0]   opcode, ALU_control;
     output          RegDst, MemRead, MemtoReg, MemWrite, ALUSrc, RegWrite;
     output  [5:0]   ALUOp;
