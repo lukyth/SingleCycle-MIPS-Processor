@@ -23,6 +23,9 @@
     $ vvp processor -lxt2
     $ gtkwave testbench.vcd
     
-## Contributors
+## Team
 
-  https://github.com/Lukyth/SingleCycle-MIPS-Processor/graphs/contributors
+  ![Kanitkorn Sujautra avatar](https://avatars0.githubusercontent.com/u/7040242?v=3&s=60) | ![vuun avatar](https://avatars3.githubusercontent.com/u/8774760?v=3&s=60)
+---|---
+[Kanitkorn Sujautra](https://github.com/lukyth) | [vuun](https://github.com/vuun)
+
