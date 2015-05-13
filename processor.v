@@ -60,4 +60,55 @@ module processor(
     .clock(clock)
   );
 
+  wire [31:0] instruction_extended;
+  signextender extend_instruction (
+    .in(instruction[15:0]),
+    .out(instruction_extended)
+  );
+
+  wire [4:0] alu_b;
+  mux mux_alu_b (
+    .in_0(read_data_2),
+    .in_1(instruction_extended),
+    .select(ALUSrc),
+    .out(alu_b)
+  );
+
+  wire [31:0] alu_result;
+  wire branch, jump;
+  alu ALU (
+    .Func_in(ALUOp),
+    .A_in(read_data_1),
+    .B_in(alu_b),
+    .O_out(alu_result),
+    .Branch_out(branch),
+    .Jump_out(jump)
+  );
+
+  wire [31:0] read_data;
+  data_memory Data_memory (
+    .clock(clock),
+    .reset(reset),
+    .addr_in(alu_result),
+    .writedata_in(read_data_2),
+    .re_in(MemRead),
+    .we_in(MemWrite),
+    .size_in(2'b11),
+    .readdata_out(read_data),
+
+    .serial_in(serial_in),
+    .serial_ready_in(serial_ready_in),
+    .serial_valid_in(serial_valid_in),
+    .serial_out(serial_out),
+    .serial_rden_out(serial_rden_out),
+    .serial_wren_out(serial_wren_out)
+  );
+
+  mux mux_write_data (
+    .in_0(alu_result),
+    .in_1(read_data),
+    .select(MemtoReg),
+    .out(write_data)
+  );
+
 endmodule
